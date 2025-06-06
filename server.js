@@ -4,7 +4,13 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+// ✅ CORS com suporte a Authorization
+app.use(cors({
+  origin: '*',
+  methods: ['POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 app.post('/pix', async (req, res) => {
@@ -44,8 +50,8 @@ app.post('/pix', async (req, res) => {
 
     const data = await response.json();
 
-    // 🔍 Mostra a resposta da API para debug no console do Render
-    console.log('Resposta da SelfPay:', data);
+    // 🟡 Log para depurar no Render caso algo falhe
+    console.log('📦 SelfPay API Response:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
       return res.status(response.status).json({ error: data.message || 'Erro ao criar transação PIX' });
@@ -53,11 +59,11 @@ app.post('/pix', async (req, res) => {
 
     res.json(data);
   } catch (error) {
-    console.error('Erro ao processar pagamento PIX:', error);
+    console.error('❌ Erro ao processar pagamento PIX:', error);
     res.status(500).json({ error: 'Erro interno no servidor' });
   }
 });
 
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`🚀 Servidor rodando na porta ${port}`);
 });
