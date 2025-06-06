@@ -42,12 +42,15 @@ app.post('/pix', async (req, res) => {
       body: JSON.stringify(transactionData)
     });
 
+    const data = await response.json();
+
+    // 🔍 Mostra a resposta da API para debug no console do Render
+    console.log('Resposta da SelfPay:', data);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json({ error: errorData.message || 'Erro ao criar transação PIX' });
+      return res.status(response.status).json({ error: data.message || 'Erro ao criar transação PIX' });
     }
 
-    const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error('Erro ao processar pagamento PIX:', error);
